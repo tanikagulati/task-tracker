@@ -11,25 +11,35 @@ class InputFields extends StatelessWidget {
       {Key? key,
       required this.title,
       required this.hint,
-      required this.controller,
+      this.controller,
       this.widget})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: Column(
-        children: [
-          Text(title),
-          Container(
-              margin: EdgeInsets.all(8),
-              height: 40.h,
-              width: double.maxFinite,
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(15))),
-        ],
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      SizedBox(height: 12.h),
+      Text(
+        title,
+        style: TextStyle(fontSize: 18.sp,color: Colors.black),
       ),
-    );
+      SizedBox(height: 5.h),
+      Container(
+          padding: EdgeInsets.only(left: 8, right: 8),
+          //margin: EdgeInsets.only(top: 8.h),
+          height: 42.h,
+          width: double.maxFinite,
+          child: TextFormField(
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: hint,hintStyle: TextStyle(color: Colors.grey),
+                suffixIcon: widget == null ? null : widget),
+            controller: controller,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey),
+          )),
+    ]);
   }
 }
