@@ -42,6 +42,7 @@ dependencies:
   intl:
   flutter_screenutil:
   date_picker_timeline:
+  sqflite:
 
 dev_dependencies:
   flutter_test:

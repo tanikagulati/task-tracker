@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:todo/Widgets/input_fields.dart';
+import 'package:todo/controller.dart';
+import 'package:todo/models/taskdata.dart';
 import 'package:todo/pages/homepage.dart';
 import 'package:intl/intl.dart';
 
@@ -22,6 +24,9 @@ class _AddTaskState extends State<AddTask> {
   String repeat = 'None';
   Iterable remindList = ['5', '10', '15', '20', '30'];
   Iterable repeatList = ['None', 'Daily', 'Weekly', 'Monthly'];
+  TextEditingController titlecontroller = TextEditingController();
+  TextEditingController notecontroller = TextEditingController();
+  final controller taskController = Get.put(controller());
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +59,16 @@ class _AddTaskState extends State<AddTask> {
             'Add Task',
             style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
           ),
-          InputFields(title: 'Title', hint: 'Enter a Title'),
-          InputFields(title: 'Note', hint: 'Enter a Note'),
+          InputFields(
+            title: 'Title',
+            hint: 'Enter a Title',
+            controller: titlecontroller,
+          ),
+          InputFields(
+            title: 'Note',
+            hint: 'Enter a Note',
+            controller: notecontroller,
+          ),
           InputFields(
             title: 'Date',
             hint: DateFormat.yMd().format(selectedDate),
@@ -130,18 +143,16 @@ class _AddTaskState extends State<AddTask> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                  onPressed: (null),
+                  onPressed: dataValidation,
                   child: Container(
                     width: 130.w,
                     height: 40.h,
                     child: Center(
-                      child: Text(
-                        'Create',
-                        style: TextStyle(
+                      child: Text('Create',
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: 18.sp,
-                          ),
-                      ),
+                          )),
                     ),
                   ),
                   style: ButtonStyle(
@@ -171,8 +182,8 @@ class _AddTaskState extends State<AddTask> {
   }
 
   showClock(bool selectingStartTime) async {
-    TimeOfDay? timepicked =
-        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    TimeOfDay? timepicked = await showTimePicker(
+        context: context, initialTime: TimeOfDay(hour: 12, minute: 0));
     if (selectingStartTime == true) {
       setState(() {
         startTime = timepicked!.format(context).toString();
@@ -182,5 +193,32 @@ class _AddTaskState extends State<AddTask> {
         endTime = timepicked!.format(context).toString();
       });
     }
+  }
+
+  dataValidation() {
+    if (titlecontroller.text.isNotEmpty && notecontroller.text.isNotEmpty) {
+      print('Required fields there');
+      taskToDB();
+    } else {
+      Get.snackbar('Error', 'Required fields are empty!',
+          icon: Icon(Icons.error_outline),
+          colorText: Colors.red[600],
+          backgroundColor: Colors.white);
+    }
+  }
+
+  taskToDB() async {
+    var res = await taskController.addtask(
+        task: taskData(
+      iscompleted: 0,
+      title: titlecontroller.text,
+      note: notecontroller.text,
+      date: DateFormat.yMd().format(selectedDate),
+      startTime: startTime,
+      endTime: endTime,
+      remind: remind,
+      repeat: repeat,
+    ));
+    print('Inserted successfully : $res');
   }
 }
