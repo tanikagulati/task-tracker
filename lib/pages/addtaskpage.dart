@@ -7,6 +7,7 @@ import 'package:todo/controller.dart';
 import 'package:todo/models/taskdata.dart';
 import 'package:todo/pages/homepage.dart';
 import 'package:intl/intl.dart';
+import 'package:todo/pages/homepage.dart';
 
 class AddTask extends StatefulWidget {
   const AddTask({Key? key}) : super(key: key);
@@ -26,7 +27,6 @@ class _AddTaskState extends State<AddTask> {
   Iterable repeatList = ['None', 'Daily', 'Weekly', 'Monthly'];
   TextEditingController titlecontroller = TextEditingController();
   TextEditingController notecontroller = TextEditingController();
-  final controller taskController = Get.put(controller());
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +143,13 @@ class _AddTaskState extends State<AddTask> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                  onPressed: dataValidation,
+                  onPressed: () {
+                    dataValidation;
+                    taskToDB();
+                    taskController.getTasks();
+                    Get.to(() => HomePage());
+                    // setState(() {});
+                  },
                   child: Container(
                     width: 130.w,
                     height: 40.h,
@@ -197,7 +203,7 @@ class _AddTaskState extends State<AddTask> {
 
   dataValidation() {
     if (titlecontroller.text.isNotEmpty && notecontroller.text.isNotEmpty) {
-      print('Required fields there');
+      // print('Required fields there');
       taskToDB();
     } else {
       Get.snackbar('Error', 'Required fields are empty!',
@@ -208,7 +214,8 @@ class _AddTaskState extends State<AddTask> {
   }
 
   taskToDB() async {
-    var res = await taskController.addtask(
+    // print('Adding task to database');
+    var res = await controller.addtask(
         task: taskData(
       iscompleted: 0,
       title: titlecontroller.text,

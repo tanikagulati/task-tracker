@@ -29,4 +29,14 @@ class DB {
   static Future<int?> insert(taskData? task) async {
     return await db?.insert(tablename, task!.tojson());
   }
+
+  static Future<List<Map<String, dynamic>>> query() async {
+    print('query initialized');
+    return db!.query(tablename);
+  }
+
+  static delete(taskData task){
+    db!.delete(tablename,where: 'id = ?',whereArgs: [task.id]);
+
+  }
 }

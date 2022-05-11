@@ -9,7 +9,18 @@ class controller extends GetxController {
     super.onReady();
   }
 
-  Future<int?> addtask({taskData? task}) async {
+  var taskList = <taskData>[].obs;
+
+  static Future<int?> addtask({taskData? task}) async {
     return await DB.insert(task);
+  }
+
+  void getTasks() async {
+    List<Map<String, dynamic>> tasks = await DB.query();
+    taskList.assignAll(tasks.map((e) => taskData.fromjson(e)).toList());
+  }
+
+  void delete(task){
+    DB.delete(task);
   }
 }
