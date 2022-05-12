@@ -48,9 +48,7 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(
                         fontSize: 24,
                         color: Colors.black,
-                        fontWeight: FontWeight.bold
-                        //color: Color.fromARGB(255, 183, 179, 179)
-                        ),
+                        fontWeight: FontWeight.bold),
                   ),
                   left: 14.w,
                   top: 10.h,
@@ -69,9 +67,6 @@ class _HomePageState extends State<HomePage> {
                   child: ElevatedButton(
                       onPressed: () {
                         Get.to(() => AddTask());
-                        // setState(() {
-                        //   taskController.getTasks();
-                        // });
                       },
                       child: Text(
                         'Add Task',
@@ -156,33 +151,22 @@ class _HomePageState extends State<HomePage> {
 
   Widget showTasks() {
     taskController.getTasks();
-    // print(taskController.taskList.length);
-    // return Container(
-    //  width: ScreenUtil().screenWidth,
-    //    height: double,
-    //     child:
-    //  return Wrap(
-    //   children:
-      //  return Expanded(
-    return Obx(() => ListView.builder(
-        shrinkWrap: true,
-        itemBuilder: ((context, index) {
-          return AnimationConfiguration.staggeredList(
-              position: index,
-              child: SlideAnimation(
-                child: FadeInAnimation(
-                    child: Row(
-                  children: [
-                    GestureDetector(
-                      child: TaskTile(taskController.taskList[index]),
-                    ),
-                  ],
-                )),
-              ));
-        }),
-        itemCount: taskController.taskList.length));
-    //       ),
-    // ),]
-    //);
+    return Obx(() => SingleChildScrollView(
+          child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: ((context, index) {
+                return AnimationConfiguration.staggeredList(
+                    position: index,
+                    child: SlideAnimation(
+                      child: FadeInAnimation(
+                        child: GestureDetector(
+                          child: TaskTile(taskController.taskList[index]),
+                        ),
+                      ),
+                    ));
+              }),
+              itemCount: taskController.taskList.length),
+        ));
   }
 }
